@@ -1,8 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   context: path.resolve('app'),
@@ -28,11 +26,7 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin("styles.css"),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.BannerPlugin("************\nWelcome to Stormify\n***************"),
-    new CopyWebpackPlugin([
-      { from: './../node_modules/react/dist/react.js', to: 'lib/react.js' },
-      { from: './../node_modules/react-dom/dist/react-dom.js', to: 'lib/react-dom.js' }
-    ])
+    new webpack.BannerPlugin("************\nWelcome to Stormify\n***************")
   ],
   module: {
     preloaders: [
@@ -43,9 +37,9 @@ module.exports = {
     ],
     loaders: [
       {
-        test: /\.tsx$/,
-        loader: 'ts-loader',
-        exclude: /node_modules\/typings\/public/
+        test: /\.ts(x?)$/,
+				loaders: ['babel-loader?cacheDirectory,presets[]=react,presets[]=es2015', 'ts'],
+				include: path.join(__dirname, 'app')
       },
       {
         test: /\.css$/,
@@ -58,33 +52,10 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(jpe?g|png|gif)$/i,
-        loader: 'file?name=[name].[ext]'
-      },
-      {
-        test: /\.eot(\?v=\d+.\d+.\d+)?$/,
-        loader: 'file'
-      },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff"
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
-      },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=image/svg+xml'
-      },
-      {
-        test: /\.ico$/,
-        loader: 'file?name=[name].[ext]'
+        test: /\.(png|jpg|jpeg|gif|ttf|eot)$/,
+        loader: 'url-loader?limit=10000',
+        exclude: /node_modules/
       }
     ]
-  },
-  externals: {
-      "react": "React",
-      "react-dom": "ReactDOM"
   }
 }
